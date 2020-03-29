@@ -10,21 +10,20 @@
 			}
 		</style>
 	</head>
-
-	<body>
-		<div style="float: left; width: 70%;">
-			<canvas id="graphCanvas"></canvas>
-		</div>
-		<div style="float: right; overflow: scroll; height: 600px;">
-			<div id="controls">
-			foo
+	<body style="display: flex; flex-direction: column;">
+		<div style="flex: 1;">
+			<div style="float: left; width: 80%; flex: 1;">
+				<canvas id="graphCanvas"></canvas>
+			</div>
+			<div style="float: right; overflow-y: scroll; height: calc(100vh - 30px);">
+				<div id="controls"></div>
 			</div>
 		</div>
-		<div>
+		<footer>
 			<span><a href="https://github.com/aib/covgraph">Source</a>.</span>
 			<span><a href="https://github.com/CSSEGISandData/COVID-19">Data source</a>.</span>
 			<span>Uses <a href="https://www.chartjs.org/">Chart.js</a> and <a href="https://www.papaparse.com/">Papa Parse</a>.</span>
 			<span>License: <a href="https://creativecommons.org/licenses/by/4.0/">CC-BY</a>.</span>
-		</div>
+		</footer>
 	</body>
 </html>
