@@ -34,13 +34,19 @@ function main()
 	const xhr = new XMLHttpRequest();
 	xhr.addEventListener('load', ev => {
 		window.dataObject = parseCSV(xhr.response);
-		const state = stateFromUrl();
-		updateControls(window.dataObject, state);
-		updateChart(window.dataObject, state);
-		window.history.replaceState({}, "", urlFromState(state));
+		window.history.replaceState({}, "", urlFromState(stateFromUrl()));
+		updateFromUrl();
+		window.onpopstate = updateFromUrl;
 	});
 	xhr.open('GET', 'time_series_covid19_confirmed_global.csv');
 	xhr.send();
+}
+
+function updateFromUrl()
+{
+	window.state = stateFromUrl();
+	updateControls(window.dataObject, window.state);
+	updateChart(window.dataObject, window.state);
 }
 
 function updateControls(dataObject, state)
@@ -63,15 +69,9 @@ function updateControls(dataObject, state)
 		controls.appendChild(temp.content.firstChild);
 
 		const checkbox = document.getElementById(id);
-//		checkbox.onchange = update;
+		checkbox.onchange = updateAfterChange;
 		window.checkboxes.push(checkbox);
 	});
-}
-
-function updateAfterLoad()
-{
-	const state = stateFromUrl();
-	updateChart(window.dataObject, state);
 }
 
 function urlFromState(state)
@@ -98,14 +98,11 @@ function stateFromUrl()
 function updateAfterChange()
 {
 	const selectedCountries = window.checkboxes.filter(c => c.checked).map(c => c.attributes['data-country'].value);
-	const options = {
-		countries: selectedCountries,
-	};
-	updateChart(window.dataObject, options);
 
-	console.log(document.URL);
-	window.history.pushState(options, "", "url");
-	console.log(document.URL);
+	window.state.countries = selectedCountries;
+	window.history.pushState(null, "", urlFromState(window.state));
+
+	updateChart(window.dataObject, window.state);
 }
 
 function updateChart(dataObject, options)
