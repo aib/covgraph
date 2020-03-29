@@ -159,7 +159,7 @@ function parseCSV(csv)
 
 	const emptyStats = () => Array(days).fill(0);
 
-	var countries = [WORLD_TOTAL_LABEL];
+	var countries = [];
 	var table = {};
 	table[WORLD_TOTAL_LABEL] = emptyStats();
 
@@ -181,6 +181,9 @@ function parseCSV(csv)
 		const numbers = row.slice(FIRST_DATE_COLUMN).map(x => parseInt(x, 10));
 		addCountryStats(country, numbers);
 	});
+
+	countries = countries.sort();
+	countries.unshift(WORLD_TOTAL_LABEL);
 
 	return {
 		dates: dates,
