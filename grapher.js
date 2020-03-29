@@ -77,10 +77,8 @@ function updateAfterLoad()
 function urlFromState(state)
 {
 	const baseUrl = window.location.href.split('?')[0];
-	const searchParams = new URLSearchParams(state).toString();
-
-	console.log(state, "->", searchParams);
-	return baseUrl + '?' + searchParams;
+	const query = encodeURIComponent(JSON.stringify(state));
+	return baseUrl + '?' + query;
 }
 
 function stateFromUrl()
@@ -89,12 +87,10 @@ function stateFromUrl()
 		countries: [WORLD_TOTAL_LABEL],
 	};
 
-	const searchParams = new URLSearchParams(window.location.search);
-	Array.from(searchParams.keys()).forEach(k => state[k] = searchParams.get(k));
+	const query = decodeURIComponent(window.location.search.substring(1));
+	const urlState = (query === '') ? {} : JSON.parse(decodeURIComponent(window.location.search.substring(1)));
 
-	if (searchParams.has('countries')) {
-		state.countries = searchParams.getAll('countries');
-	}
+	Object.keys(urlState).forEach(k => state[k] = urlState[k]);
 
 	return state;
 }
