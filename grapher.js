@@ -149,7 +149,7 @@ function parseCSV(csv)
 
 	const parseDate = dateStr => (sp => new Date(parseInt(sp[2], 10) + 2000, parseInt(sp[0], 10) - 1, parseInt(sp[1], 10))) (dateStr.split("/"));
 
-	const csvTable = Papa.parse(csv).data;
+	const csvTable = Papa.parse(csv, { skipEmptyLines: true }).data;
 
 	const header = csvTable[0];
 	const days = header.length - FIRST_DATE_COLUMN;
