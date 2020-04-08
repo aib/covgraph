@@ -117,6 +117,10 @@ function updateAfterChange()
 		c => selectedCountries.includes(c)
 	);
 
+	const yscale = Array.prototype.slice.call(document.getElementsByName('yscale'))
+		.filter(r => r.checked)[0].value;
+	window.state.yscale = yscale;
+
 	window.history.pushState(null, "", urlFromState(window.state));
 
 	updateChart(window.dataObject, window.state);
@@ -143,6 +147,7 @@ function updateChart(dataObject, options)
 	}
 
 	const objMap = (obj, f) => Object.fromEntries(f(Object.entries(obj)));
+	const valsMap = (table, f) => objMap(table, es => es.map(e => [e[0], f(e[1])]));
 
 	let table = objMap(dataObject.table,
 		es => es.filter(e => options.countries.includes(e[0]))
@@ -152,6 +157,27 @@ function updateChart(dataObject, options)
 	let xSuffix = "";
 	let yLabel = "Cases";
 	let ySuffix = "";
+
+	if (options.yscale == 'log') {
+		window.chart.options.scales.yAxes[0].type = "logarithmic";
+	} else {
+		window.chart.options.scales.yAxes[0].type = "linear";
+	}
+
+	if (options.yscale == 'delta') {
+		// A proper reducer is impossible to write without array functions, pairs or easy indexing
+		table = valsMap(table, arr => {
+			const delta = [];
+			let lastVal = arr[0];
+			arr.forEach(v => {
+				delta.push(v - lastVal);
+				lastVal = v;
+			});
+			return delta;
+		});
+
+		ySuffix = " (Change)";
+	}
 
 	if (options.x_axis == '??') {
 	} else {
