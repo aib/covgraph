@@ -51,14 +51,10 @@ function updateFromUrl()
 
 function updateControls(dataObject, state)
 {
-	const controls = document.getElementById('controls');
-
 	if (window.checkboxes === undefined) {
 		window.checkboxes = [];
 
-		const checkboxes = document.createElement('div');
-		checkboxes.setAttribute('id', 'checkboxes');
-		controls.appendChild(checkboxes);
+		const countries = document.getElementById('countries');
 
 		dataObject.countries.forEach((country, i) => {
 			const id = 'check_' + i.toString();
@@ -70,7 +66,7 @@ function updateControls(dataObject, state)
 			const temp = document.createElement('template');
 			temp.innerHTML = htmlStr;
 
-			checkboxes.appendChild(temp.content.firstChild);
+			countries.appendChild(temp.content.firstChild);
 
 			const checkbox = document.getElementById(id);
 			checkbox.onchange = updateAfterChange;
