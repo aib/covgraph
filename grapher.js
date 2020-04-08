@@ -132,30 +132,43 @@ function updateChart(dataObject, options)
 		});
 	}
 
-	function getDataset(country, color) {
+	function getDataset(table, country, color) {
 		return {
 			label: country,
 			backgroundColor: color,
 			borderColor: color,
-			data: dataObject.table[country],
+			data: table[country],
 			fill: false,
 		}
 	}
+
+	const objMap = (obj, f) => Object.fromEntries(f(Object.entries(obj)));
+
+	let table = objMap(dataObject.table,
+		es => es.filter(e => options.countries.includes(e[0]))
+	);
+	let dataLabels;
+	let xLabel = "Date";
+	let xSuffix = "";
+	let yLabel = "Cases";
+	let ySuffix = "";
 
 	if (options.x_axis == '??') {
 	} else {
 		const pad2 = n => (s => ((s.length < 2) ? ("0" + s) : s)) (n.toString());
 		dataLabels = dataObject.dates.map(d => (1900 + d.getYear()) + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()));
-		window.chart.options.scales.xAxes[0].scaleLabel.labelString = "Date";
 	}
 
 	const colors = getColorScheme(options.countries.length);
-	const datasets = options.countries.map((c, i) => getDataset(c, colors[i]));
+	const datasets = options.countries.map((c, i) => getDataset(table, c, colors[i]));
 
 	window.chart.data = {
 		labels: dataLabels,
 		datasets: datasets
 	};
+
+	window.chart.options.scales.xAxes[0].scaleLabel.labelString = xLabel + xSuffix;
+	window.chart.options.scales.yAxes[0].scaleLabel.labelString = yLabel + ySuffix;
 
 	window.chart.update();
 }
