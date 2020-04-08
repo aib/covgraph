@@ -61,10 +61,9 @@ function updateControls(dataObject, state)
 		controls.appendChild(checkboxes);
 
 		dataObject.countries.forEach((country, i) => {
-			const checkedStr = (state.countries.indexOf(country) == -1) ? '' : ' checked="checked"';
 			const id = 'check_' + i.toString();
 			const htmlStr = '<span class="checkboxes">'
-				+ '<input type="checkbox" id="' + id + '" data-country="' + country + '"' + checkedStr + '></input>'
+				+ '<input type="checkbox" id="' + id + '" data-country="' + country + '"></input>'
 				+ '<label for="' + id + '">' + country + '</label>'
 				+ '</span>'
 
@@ -78,6 +77,15 @@ function updateControls(dataObject, state)
 			window.checkboxes.push(checkbox);
 		});
 	}
+
+	dataObject.countries.forEach((country, i) => {
+		const checkbox = document.getElementById('check_' + i.toString());
+		if (state.countries.includes(country)) {
+			checkbox.setAttribute('checked', 'checked');
+		} else {
+			checkbox.removeAttribute('checked');
+		}
+	});
 }
 
 function urlFromState(state)
