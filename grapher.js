@@ -99,7 +99,14 @@ function updateAfterChange()
 {
 	const selectedCountries = window.checkboxes.filter(c => c.checked).map(c => c.attributes['data-country'].value);
 
-	window.state.countries = selectedCountries;
+//	window.state.countries = selectedCountries;
+	window.state.countries = window.state.countries.concat(
+		selectedCountries.filter(c => !window.state.countries.includes(c))
+	);
+	window.state.countries = window.state.countries.filter(
+		c => selectedCountries.includes(c)
+	);
+
 	window.history.pushState(null, "", urlFromState(window.state));
 
 	updateChart(window.dataObject, window.state);
